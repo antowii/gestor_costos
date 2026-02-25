@@ -10,7 +10,7 @@ public class CompraIngrediente {
     // Constructor con datos para que sea más fácil crear objetos en los tests
     public CompraIngrediente(String nombre, double precioTotal) {
         this.nombre = nombre;
-        this.precioTotal = precioTotal;
+        setPrecioTotal(precioTotal);
     }
 
     public double getPrecioTotal() {
@@ -18,6 +18,9 @@ public class CompraIngrediente {
     }
 
     public void setPrecioTotal(double precioTotal) {
+        if (precioTotal <= 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo");
+        }
         this.precioTotal = precioTotal;
     }
 

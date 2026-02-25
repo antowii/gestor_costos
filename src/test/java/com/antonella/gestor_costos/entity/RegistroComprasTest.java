@@ -2,9 +2,7 @@ package com.antonella.gestor_costos.entity;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class CarritoTest {
+class RegistroComprasTest {
 
     @Test
     void calcularTotalGastado() {
