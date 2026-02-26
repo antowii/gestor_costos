@@ -37,4 +37,14 @@ public class RegistroCompras {
        }
         return calcularTotalGastado() / getTotalCompras();
     }
+
+    public CompraIngrediente obtenerCompraMasCara() {
+        CompraIngrediente masCara = null;
+        for (CompraIngrediente compra : compras) {
+            if (masCara == null || compra.getPrecioTotal() > masCara.getPrecioTotal()) {
+                masCara = compra;
+            }
+        }
+        return masCara;
+    }
 }

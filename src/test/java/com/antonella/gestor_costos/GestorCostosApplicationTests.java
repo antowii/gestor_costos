@@ -2,17 +2,23 @@ package com.antonella.gestor_costos;
 
 import com.antonella.gestor_costos.entity.RegistroCompras;
 import com.antonella.gestor_costos.entity.CompraIngrediente;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GestorCostosApplicationTests {
+	RegistroCompras registroCompras;
+
+	@BeforeEach
+	void setUp() {
+		registroCompras = new RegistroCompras();
+	}
 
 	@Test
 	void deberiaCalcularTotalCorrectamente() {
 		// ARRANGE (PREPARAR) -- Given un registroCompra con una compra de 1000
-		RegistroCompras registroCompras = new RegistroCompras();
 		CompraIngrediente compra = new CompraIngrediente();
 		compra.setPrecioTotal(1000);
 
@@ -28,7 +34,6 @@ class GestorCostosApplicationTests {
 	@Test
 	void deberiaContarComprasCorrectamente() {
 		// ARRANGE (PREPARAR)
-		RegistroCompras registroCompras = new RegistroCompras();
 		CompraIngrediente compra = new CompraIngrediente();
 		CompraIngrediente compra2 = new CompraIngrediente();
 
@@ -47,8 +52,7 @@ class GestorCostosApplicationTests {
 
 	@Test
 	void deberiaRetornarCeroCuandoNoHayCompras() { //Test de valor de retorno, no de excepción, se usa assertEquals
-		//GIVEN
-		RegistroCompras registroCompras = new RegistroCompras();
+		//GIVEN (AQUI FUNCIONA EL BEFORE EACH)
 
 		//WHEN
 		double total = registroCompras.calcularTotalGastado();
@@ -91,8 +95,6 @@ class GestorCostosApplicationTests {
 
 	@Test
 	void deberiaLanzarExcepcionCuandoCompraEsNull() {
-		RegistroCompras registroCompras = new RegistroCompras();
-
 		assertThrows(IllegalArgumentException.class, () -> {
 			registroCompras.agregarCompra(null);
 		});
@@ -100,8 +102,7 @@ class GestorCostosApplicationTests {
 
 	@Test
 	void deberiaRetornarCeroCuandoNoHayComprasParaPromedio() {
-		//GIVEN
-		RegistroCompras registroCompras = new RegistroCompras();
+		//GIVEN (AQUI FUNCIONA EL BEFORE EACH)
 
 		//WHEN
 		double promedio = registroCompras.calcularPromedio();
@@ -113,11 +114,8 @@ class GestorCostosApplicationTests {
 	@Test
 	void deberiaCalcularPromedioCorrectamenteCuandoHayCompras() {
 		//GIVEN
-		RegistroCompras registroCompras = new RegistroCompras();
 		CompraIngrediente compra = new CompraIngrediente();
 		CompraIngrediente compra2 = new CompraIngrediente();
-		registroCompras.agregarCompra(compra);
-		registroCompras.agregarCompra(compra2);
 
 		compra.setPrecioTotal(100);
 		compra2.setPrecioTotal(300);
@@ -130,5 +128,50 @@ class GestorCostosApplicationTests {
 
 		//THEN
 		assertEquals(200.0, promedio);
+	}
+
+	@Test
+	void deberiaCalcularPromedioConDecimales() {
+		//GIVEN
+		CompraIngrediente compra1 = new CompraIngrediente();
+		CompraIngrediente compra2 = new CompraIngrediente();
+
+		compra1.setPrecioTotal(100);
+		compra2.setPrecioTotal(101);
+
+		registroCompras.agregarCompra(compra1);
+		registroCompras.agregarCompra(compra2);
+
+		//WHEN
+		double promedio = registroCompras.calcularPromedio();
+
+		//THEN
+		assertEquals(100.5, promedio, 0.001);
+		//El delta es el margen de tolerancia permitido en la comparación.
+		//"Acepto que el valor real esté a una pequeña distancia del esperado"
+		//Generalmente es 0.001 o 0.0001
+		//En este caso es: Acepto valores entre 100.499 y 100.501
+		//Para int → no necesitas delta
+		//Para double → casi siempre usa delta
+	}
+
+	@Test
+	void deberiaRetornarCompraMasCara() {
+		//GIVEN
+		CompraIngrediente compra1 = new CompraIngrediente();
+		CompraIngrediente compra2 = new CompraIngrediente();
+
+		compra1.setPrecioTotal(100);
+		compra2.setPrecioTotal(300);
+
+		registroCompras.agregarCompra(compra1);
+		registroCompras.agregarCompra(compra2);
+
+		//WHEN
+		CompraIngrediente compraMasCara = registroCompras.obtenerCompraMasCara();
+		//“Quiero crear una variable llamada compraMasCara que va a guardar un objeto CompraIngrediente”
+
+		//THEN
+		assertEquals(compra2, compraMasCara);
 	}
 }
