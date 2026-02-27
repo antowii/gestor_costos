@@ -1,6 +1,6 @@
 package com.antonella.gestor_costos;
 
-import com.antonella.gestor_costos.entity.RegistroCompras;
+import com.antonella.gestor_costos.service.RegistroCompras;
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -173,5 +173,25 @@ class GestorCostosApplicationTests {
 
 		//THEN
 		assertEquals(compra2, compraMasCara);
+	}
+
+	@Test
+	void deberiaRetornarCompraMasBarata() {
+		//GIVEN
+		CompraIngrediente compra1 = new CompraIngrediente();
+		CompraIngrediente compra2 = new CompraIngrediente();
+
+		compra1.setPrecioTotal(100);
+		compra2.setPrecioTotal(300);
+
+		registroCompras.agregarCompra(compra1);
+		registroCompras.agregarCompra(compra2);
+
+		//WHEN
+		CompraIngrediente compraMasBarata = registroCompras.obtenerCompraMasBarata();
+		//"Quiero crear una variable llamada compraMasBarata que va a guardar un objeto CompraIngrediente"
+
+		//THEN
+		assertEquals(compra1, compraMasBarata);
 	}
 }
