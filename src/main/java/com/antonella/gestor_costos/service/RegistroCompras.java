@@ -3,6 +3,8 @@ package com.antonella.gestor_costos.service;
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import com.antonella.gestor_costos.repository.CompraRepository;
 
+import java.util.List;
+
 public class RegistroCompras {
 
     private CompraRepository repository;
@@ -55,5 +57,9 @@ public class RegistroCompras {
             }
         }
         return masBarata;
+    }
+
+    public List<CompraIngrediente> listaCompleta() {
+        return repository.getCompras();
     }
 }
