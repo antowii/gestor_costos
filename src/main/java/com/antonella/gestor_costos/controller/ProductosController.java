@@ -2,8 +2,8 @@ package com.antonella.gestor_costos.controller;
 
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import com.antonella.gestor_costos.service.RegistroCompras;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,14 +12,10 @@ import java.util.List;
 public class ProductosController {
     private RegistroCompras registro;
 
-    public ProductosController() {
-        registro = new RegistroCompras();
-        CompraIngrediente producto1 = new CompraIngrediente("Harina", 500);
-        CompraIngrediente producto2 = new CompraIngrediente("Manjar", 1000);
-
-        registro.agregarCompra(producto1);
-        registro.agregarCompra(producto2);
+    public ProductosController(RegistroCompras registro) {
+        this.registro = registro;
     }
+
     //2. Le decimos qué ruta de internet va a escuchar
     @GetMapping("/bienvenida")
     public String darBienvenida() {
@@ -35,6 +31,18 @@ public class ProductosController {
     @GetMapping("/compras")
     public List<CompraIngrediente> getCompras() {
         return registro.listaCompleta();
+    }
+
+    @PostMapping("/compras")
+    public String agregarNuevaCompra(@RequestBody CompraIngrediente nuevaCompra) {
+        registro.agregarCompra(nuevaCompra);
+        return "¡Ingrediente guardado con éxito!";
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String manejarErrorDePrecio(IllegalArgumentException exception) {
+        return exception.getMessage(); // ¡Paréntesis vacíos!
     }
 
 }

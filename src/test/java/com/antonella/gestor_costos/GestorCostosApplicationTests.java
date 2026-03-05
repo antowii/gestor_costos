@@ -1,49 +1,58 @@
 package com.antonella.gestor_costos;
 
+import com.antonella.gestor_costos.repository.CompraRepository;
 import com.antonella.gestor_costos.service.RegistroCompras;
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GestorCostosApplicationTests {
-	RegistroCompras registroCompras;
+	private RegistroCompras registroCompras;
+	private CompraRepository compraRepositoryMock; // 1. Declaramos la variable para el mock
 
 	@BeforeEach
 	void setUp() {
-		registroCompras = new RegistroCompras();
+		// 2. Creamos un Repository falso (mock)
+		compraRepositoryMock = Mockito.mock(CompraRepository.class);
+		// 3. Le inyectamos el mock al Service al momento de crearlo
+		registroCompras = new RegistroCompras(compraRepositoryMock);
 	}
 
 	@Test
 	void deberiaCalcularTotalCorrectamente() {
-		// ARRANGE (PREPARAR) -- Given un registroCompra con una compra de 1000
-		CompraIngrediente compra = new CompraIngrediente();
-		compra.setPrecioTotal(1000);
+		// 1. GIVEN: Creamos los datos falsos y la lista
+		CompraIngrediente compra1 = new CompraIngrediente("Harina", 500);
+		CompraIngrediente compra2 = new CompraIngrediente("Manjar", 500);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(compra1, compra2);
 
-		registroCompras.agregarCompra(compra);
+		// 2. EL ENTRENAMIENTO DEL MOCK: Le decimos qué responder
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		//ACT (EJECUTAR) -- When calculo el total
+		// 3. WHEN: Ejecutamos el metodo del Service
 		double total = registroCompras.calcularTotalGastado();
 
-		//ASSERT (VERIFICAR) -- Then el total debe ser 1000
-		assertEquals(1000, total);
+		// 4. THEN: Verificamos el resultado
+		assertEquals(1000.0, total);
 	}
 
 	@Test
 	void deberiaContarComprasCorrectamente() {
-		// ARRANGE (PREPARAR)
-		CompraIngrediente compra = new CompraIngrediente();
-		CompraIngrediente compra2 = new CompraIngrediente();
+		// 1. GIVEN: Creamos los datos falsos y la lista
+		CompraIngrediente compra1 = new CompraIngrediente("Harina", 500);
+		CompraIngrediente compra2 = new CompraIngrediente("Manjar", 1500);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(compra1, compra2);
 
-		compra.setPrecioTotal(1000);
-		compra2.setPrecioTotal(2000);
+		// 2. EL ENTRENAMIENTO DEL MOCK: Le decimos qué responder
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		registroCompras.agregarCompra(compra);
-		registroCompras.agregarCompra(compra2);
-
-		//ACT (EJECUTAR)
+		// 3. WHEN: Ejecutamos el metodo del Service
 		int totalCompras = registroCompras.getTotalCompras();
 
 		//ASSERT (VERIFICAR)
@@ -113,85 +122,66 @@ class GestorCostosApplicationTests {
 
 	@Test
 	void deberiaCalcularPromedioCorrectamenteCuandoHayCompras() {
-		//GIVEN
-		CompraIngrediente compra = new CompraIngrediente();
-		CompraIngrediente compra2 = new CompraIngrediente();
+		// 1. GIVEN: Creamos los datos falsos y la lista
+		CompraIngrediente compra1 = new CompraIngrediente("Harina", 500);
+		CompraIngrediente compra2 = new CompraIngrediente("Manjar", 1500);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(compra1, compra2);
 
-		compra.setPrecioTotal(100);
-		compra2.setPrecioTotal(300);
+		// 2. EL ENTRENAMIENTO DEL MOCK: Le decimos qué responder
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		registroCompras.agregarCompra(compra);
-		registroCompras.agregarCompra(compra2);
-
-		//WHEN
+		// 3. WHEN: Ejecutamos el metodo del Service
 		double promedio = registroCompras.calcularPromedio();
 
 		//THEN
-		assertEquals(200.0, promedio);
+		assertEquals(1000.0, promedio);
 	}
 
 	@Test
 	void deberiaCalcularPromedioConDecimales() {
-		//GIVEN
-		CompraIngrediente compra1 = new CompraIngrediente();
-		CompraIngrediente compra2 = new CompraIngrediente();
+		// 1. GIVEN: Dos precios que sumen 201 (para que el promedio sea 100.5)
+		CompraIngrediente compra1 = new CompraIngrediente("Harina", 100.0);
+		CompraIngrediente compra2 = new CompraIngrediente("Manjar", 101.0);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(compra1, compra2);
 
-		compra1.setPrecioTotal(100);
-		compra2.setPrecioTotal(101);
+		// 2. ENTRENAR AL MOCK
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		registroCompras.agregarCompra(compra1);
-		registroCompras.agregarCompra(compra2);
-
-		//WHEN
-		double promedio = registroCompras.calcularPromedio();
-
-		//THEN
-		assertEquals(100.5, promedio, 0.001);
-		//El delta es el margen de tolerancia permitido en la comparación.
-		//"Acepto que el valor real esté a una pequeña distancia del esperado"
-		//Generalmente es 0.001 o 0.0001
-		//En este caso es: Acepto valores entre 100.499 y 100.501
-		//Para int → no necesitas delta
-		//Para double → casi siempre usa delta
+		// 3. WHEN & 4. THEN
+		assertEquals(100.5, registroCompras.calcularPromedio());
 	}
 
 	@Test
 	void deberiaRetornarCompraMasCara() {
-		//GIVEN
-		CompraIngrediente compra1 = new CompraIngrediente();
-		CompraIngrediente compra2 = new CompraIngrediente();
+		// 1. GIVEN: Una barata y una cara
+		CompraIngrediente barata = new CompraIngrediente("Harina", 500);
+		CompraIngrediente cara = new CompraIngrediente("Manjar", 2500);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(barata, cara);
 
-		compra1.setPrecioTotal(100);
-		compra2.setPrecioTotal(300);
+		// 2. ENTRENAR AL MOCK
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		registroCompras.agregarCompra(compra1);
-		registroCompras.agregarCompra(compra2);
+		// 3. WHEN
+		CompraIngrediente resultado = registroCompras.obtenerCompraMasCara();
 
-		//WHEN
-		CompraIngrediente compraMasCara = registroCompras.obtenerCompraMasCara();
-		//“Quiero crear una variable llamada compraMasCara que va a guardar un objeto CompraIngrediente”
-
-		//THEN
-		assertEquals(compra2, compraMasCara);
+		// 4. THEN: Verificamos que el objeto devuelto sea exactamente la variable "cara"
+		assertEquals(cara, resultado);
 	}
 
 	@Test
 	void deberiaRetornarCompraMasBarata() {
-		//GIVEN
-		CompraIngrediente compra1 = new CompraIngrediente();
-		CompraIngrediente compra2 = new CompraIngrediente();
+		// 1. GIVEN: Una barata y una cara
+		CompraIngrediente barata = new CompraIngrediente("Harina", 500);
+		CompraIngrediente cara = new CompraIngrediente("Manjar", 2500);
+		List<CompraIngrediente> listaSimulada = Arrays.asList(barata, cara);
 
-		compra1.setPrecioTotal(100);
-		compra2.setPrecioTotal(300);
+		// 2. ENTRENAR AL MOCK
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(listaSimulada);
 
-		registroCompras.agregarCompra(compra1);
-		registroCompras.agregarCompra(compra2);
+		// 3. WHEN
+		CompraIngrediente resultado = registroCompras.obtenerCompraMasBarata();
 
-		//WHEN
-		CompraIngrediente compraMasBarata = registroCompras.obtenerCompraMasBarata();
-		//"Quiero crear una variable llamada compraMasBarata que va a guardar un objeto CompraIngrediente"
-
-		//THEN
-		assertEquals(compra1, compraMasBarata);
+		// 4. THEN: Verificamos que el objeto devuelto sea exactamente la variable "barata"
+		assertEquals(barata, resultado);
 	}
 }

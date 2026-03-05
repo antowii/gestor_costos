@@ -1,6 +1,15 @@
 package com.antonella.gestor_costos.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity //Esto le avisa a Java que esta clase ahora es una tabla de base de datos
 public class CompraIngrediente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nombre; // Nuevo campo
     private double precioTotal;
 
@@ -26,5 +35,13 @@ public class CompraIngrediente {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
