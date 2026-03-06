@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Gestor de Costos</title>
+    </head>
+    <body>
+        <h1>Inventario de Productos 🍪</h1>
+
+        <h2>Agregar Nuevo Ingrediente 🛒</h2>
+        
+        <form action="/inventario/guardar" method="post">
+            <label>Ingrediente:</label>
+            <input type="text" name="nombre" placeholder="Ej. Manjar" required>
+            
+            <label>Precio Total</label>
+            <input type="number" name="precioTotal" placeholder="Ej: 1500" step="0.1" required>
+            
+            <button type="submit">Guardar Compra</button>
+        </form>
+        
+        <br><br><br>
+        
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Ingrediente</th>
+                    <th>Precio Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ingrediente : ${misCompras}">
+                    <td th:text="${ingrediente.nombre}">Nombre de prueba</td>
+                    <td th:text="${ingrediente.precioTotal}">0.0</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

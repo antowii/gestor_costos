@@ -64,4 +64,11 @@ public class RegistroCompras {
     public List<CompraIngrediente> listaCompleta() {
         return repository.findAll();
     }
+
+    public void agregarVariasCompras(List<CompraIngrediente> compras) {
+        if (compras == null || compras.isEmpty()) {
+            throw new IllegalArgumentException("La lista de compras no puede estar vacía");
+        }
+        repository.saveAll(compras);
+    }
 }

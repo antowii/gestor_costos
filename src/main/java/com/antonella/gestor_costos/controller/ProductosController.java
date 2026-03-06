@@ -45,4 +45,9 @@ public class ProductosController {
         return exception.getMessage(); // ¡Paréntesis vacíos!
     }
 
+    @PostMapping("/compras/lote")
+    public void agregarVariasCompras(@RequestBody List<CompraIngrediente> compras) {
+        registro.agregarVariasCompras(compras);
+    }
+
 }
