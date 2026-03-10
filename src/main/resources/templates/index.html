@@ -29,14 +29,33 @@
                 <tr>
                     <th>Ingrediente</th>
                     <th>Precio Total</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="ingrediente : ${misCompras}">
                     <td th:text="${ingrediente.nombre}">Nombre de prueba</td>
                     <td th:text="${ingrediente.precioTotal}">0.0</td>
+                    
+                    <td>
+                        <a th:href="@{/inventario/eliminar/{id}(id=${ingrediente.id})}"
+                            style="color: white; background-color: #e74c3c; padding: 5px 10px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                            ❌ Borrar
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
+        
+        <div style="background-color: #f4f6f9; padding: 20px; border-radius: 10px; border: 1px solid #dcdde1; max-width: 400px; margin-top: 20px;">
+            <h2 style="margin-top: 0; color: #2f3640;">📊 Resumen de Inversión</h2>
+            <h3 style="color: #44bd32;">
+                Total Gastado: <span th:text="${totalGastado}">0.0</span>
+            </h3>
+            
+            <h3 style="color: #0097e6;">
+                Cantidad de Productos: <span th:text="${cantidadProductos}">0</span>
+            </h3>
+        </div>
     </body>
 </html>

@@ -5,6 +5,7 @@ import com.antonella.gestor_costos.service.RegistroCompras;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -25,6 +26,10 @@ public class WebController {
         // 2. Metemos la lista en la caja y le ponemos la etiqueta "misCompras"
         model.addAttribute("misCompras", listaDeCompras);
 
+        // 3. Le pedimos los cálculos al Service y los empacamos con nuevas etiquetas
+        model.addAttribute("totalGastado", registro.calcularTotalGastado());
+        model.addAttribute("cantidadProductos", registro.getTotalCompras());
+
         // 4. Enviamos la caja al HTML
         return "index";
         // Al retornar este texto, Spring Boot buscará automáticamente
@@ -42,6 +47,15 @@ public class WebController {
         // 3. ¡LA MAGIA! En lugar de devolver una página en blanco,
         // le decimos al navegador "Vuelve a cargar la página principal"
         return "redirect:/inventario";
+    }
 
+    // Los corchetes {id} significan que esa parte de la URL va a cambiar (ej. /eliminar/1, /eliminar/5)
+    @GetMapping("/inventario/eliminar/{id}")
+    public String eliminarCompraDesdeWeb(@PathVariable Long id) {
+        // 1. Le pasamos el ID atrapado de la URL a tu Service
+        registro.eliminarCompra(id);
+
+        // 2. Recargamos la página mágicamente
+        return "redirect:/inventario";
     }
 }

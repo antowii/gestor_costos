@@ -71,4 +71,9 @@ public class RegistroCompras {
         }
         repository.saveAll(compras);
     }
+
+    public void eliminarCompra(Long id) {
+        // El repositorio de Spring Data JPA ya trae este metodo listo para usar
+        repository.deleteById(id);
+    }
 }
