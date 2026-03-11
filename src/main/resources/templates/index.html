@@ -38,6 +38,10 @@
                     <td th:text="${ingrediente.precioTotal}">0.0</td>
                     
                     <td>
+                        <a th:href="@{/inventario/editar/{id}(id=${ingrediente.id})}"
+                           style="color: white; background-color: #3498db; padding: 5px 10px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-right: 5px;">
+                            ✏️ Editar
+                        </a>
                         <a th:href="@{/inventario/eliminar/{id}(id=${ingrediente.id})}"
                             style="color: white; background-color: #e74c3c; padding: 5px 10px; text-decoration: none; border-radius: 5px; font-weight: bold;">
                             ❌ Borrar

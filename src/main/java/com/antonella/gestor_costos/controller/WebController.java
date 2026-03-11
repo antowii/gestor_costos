@@ -58,4 +58,17 @@ public class WebController {
         // 2. Recargamos la página mágicamente
         return "redirect:/inventario";
     }
+
+    @GetMapping("/inventario/editar/{id}")
+    public String mostrarFormularioDeEdicion(@PathVariable Long id, Model model) {
+
+        // 1. Buscamos el ingrediente específico en la base de datos
+        CompraIngrediente ingredienteEncontrado = registro.obtenerCompraPorId(id);
+
+        // 2. Lo metemos en la caja (Model) para enviarlo al HTML
+        model.addAttribute("ingrediente", ingredienteEncontrado);
+
+        // 3. Le decimos a Spring Boot que abra un archivo llamado "editar.html"
+        return "editar";
+    }
 }

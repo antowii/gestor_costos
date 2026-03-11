@@ -9,21 +9,56 @@ import java.util.List;
 @Service
 public class RegistroCompras {
 
+    // ==========================================
+    // 1. ATRIBUTOS Y DEPENDENCIAS
+    // ==========================================
     private CompraRepository repository;
 
+    // ==========================================
+    // 2. CONSTRUCTOR
+    // ==========================================
     public RegistroCompras(CompraRepository repository){
         this.repository = repository;
     }
 
+    // ==========================================
+    // 3. MÉTODOS TRANSACCIONALES (Crear, Actualizar, Eliminar)
+    // ==========================================
     public void agregarCompra(CompraIngrediente compra) {
-        if (compra == null) {
-            throw new IllegalArgumentException("La compra no puede ser null");
-        }
-        repository.save(compra);
+        // Envolvemos el ingrediente único en una lista y se lo pasamos al metodo grande
+        agregarVariasCompras(List.of(compra));
     }
 
+    public void agregarVariasCompras(List<CompraIngrediente> compras) {
+        // Usamos un bucle para validar cada ingrediente de la lista antes de guardar
+        for (CompraIngrediente ingrediente : compras) {
+            validarCompra(ingrediente);
+        }
+        // Si todos pasaron la validación, guardamos la lista completa de un golpe
+        repository.saveAll(compras);
+    }
+
+    public void eliminarCompra(Long id) {
+        // El repositorio de Spring Data JPA ya trae este metodo listo para usar
+        repository.deleteById(id);
+    }
+
+    // ==========================================
+    // 4. MÉTODOS DE CONSULTA (Lectura)
+    // ==========================================
+    public List<CompraIngrediente> listaCompleta() {
+        return repository.findAll();
+    }
+
+    public CompraIngrediente obtenerCompraPorId(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    // ==========================================
+    // 5. MÉTODOS DE LÓGICA Y CÁLCULO
+    // ==========================================
     public double calcularTotalGastado() {
-        double total = 0; //Aquí no hay necesidad de poner un if ya que la lista ya está vacía, en cero
+        double total = 0;
         for (CompraIngrediente compra : repository.findAll()) {
             total += compra.getPrecioTotal();
         }
@@ -36,8 +71,8 @@ public class RegistroCompras {
 
     public double calcularPromedio() {
         if (getTotalCompras() == 0) {
-           return 0;
-       }
+            return 0;
+        }
         return calcularTotalGastado() / getTotalCompras();
     }
 
@@ -61,19 +96,17 @@ public class RegistroCompras {
         return masBarata;
     }
 
-    public List<CompraIngrediente> listaCompleta() {
-        return repository.findAll();
-    }
-
-    public void agregarVariasCompras(List<CompraIngrediente> compras) {
-        if (compras == null || compras.isEmpty()) {
-            throw new IllegalArgumentException("La lista de compras no puede estar vacía");
+    // ==========================================
+    // 6. MÉTODOS PRIVADOS (Helpers)
+    // ==========================================
+    private void validarCompra(CompraIngrediente compra) {
+        // 1. Primero validamos que el objeto entero no sea nulo
+        if (compra == null) {
+            throw new IllegalArgumentException("La compra no puede ser nula");
         }
-        repository.saveAll(compras);
-    }
-
-    public void eliminarCompra(Long id) {
-        // El repositorio de Spring Data JPA ya trae este metodo listo para usar
-        repository.deleteById(id);
+        // 2. AHORA SÍ: Validamos el nombre usando null o isBlank()
+        if (compra.getNombre() == null || compra.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre del ingrediente es obligatorio y no puede estar vacío");
+        }
     }
 }

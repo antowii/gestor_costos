@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Editar Ingrediente</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 40px;">
+	<h2>✏️ Editar Ingrediente</h2>
+	<form action="/inventario/guardar" method="post" style="background-color: #f4f6f9; padding: 20px; border-radius: 10px; border: 1px solid #dcdde1; max-width: 400px;">
+		
+		<input type="hidden" name="id" th:value="${ingrediente.id}">
+		
+		<label style="font-weight: bold;">Ingrediente:</label><br>
+		<input type="text" name="nombre" th:value="${ingrediente.nombre}" required style="margin-bottom: 15px; width: 90%; padding: 8px;"><br>
+		
+		<label style="font-weight: bold;">Precio Total:</label><br>
+		<input type="number" name="precioTotal" th:value="${ingrediente.precioTotal}" step="0.1" required style="margin-bottom: 15px; width: 90%; padding: 8px;"><br>
+		
+		<button type="submit" style="background-color: #44bd32; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+			💾 Guardar Cambios
+		</button>
+		
+		<a href="/inventario" style="margin-left: 10px; color: #7f8fa6; text-decoration: none;">Cancelar</a>
+	
+	</form>
+
+</body>
+</html>
