@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class WebController {
@@ -38,12 +39,18 @@ public class WebController {
 
     // 1. Creamos la ruta POST para recibir los datos del formulario web
     @PostMapping("/inventario/guardar")
-    public String guardarCompraDesdeWeb(CompraIngrediente nuevaCompra) {
-        // 2. Usamos tu Service para guardar en la base de datos
-        // (Nota: Asegúrate de que este metodo se llame igual al que tienes en tu Service,
-        // a veces le ponen "agregarCompra" o "guardarCompra")
+    public String guardarCompraDesdeWeb(CompraIngrediente nuevaCompra, RedirectAttributes redirectAttributes) {
+        try {
+            // 2. Usamos tu Service para guardar en la base de datos
+            // (Nota: Asegúrate de que este metodo se llame igual al que tienes en tu Service,
             registro.agregarCompra(nuevaCompra);
-
+            redirectAttributes.addFlashAttribute("mensajeExito", "¡Ingrediente guardado correctamente!");
+        } catch (IllegalArgumentException e) {
+            // 2. ATRAPA: Si el Service lanza la excepción, el código salta directamente aquí
+            // Usamos la caja especial para enviar el mensaje de la excepción a la web
+            // e.getMessage() extrae el texto exacto que escribiste en tu Service ("El nombre es obligatorio...")
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+        }
         // 3. ¡LA MAGIA! En lugar de devolver una página en blanco,
         // le decimos al navegador "Vuelve a cargar la página principal"
         return "redirect:/inventario";

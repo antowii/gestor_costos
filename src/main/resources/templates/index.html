@@ -9,7 +9,14 @@
     </head>
     <body>
         <h1>Inventario de Productos 🍪</h1>
-
+        
+        <div th:if="${mensajeExito}" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #c3e6cb; max-width: 400px;">
+            ✅ <span th:text="${mensajeExito}"></span>
+        </div>
+        
+        <div th:if="${mensajeError}" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb; max-width: 400px;">
+            ❌ <span th:text="${mensajeError}"></span>
+        </div>
         <h2>Agregar Nuevo Ingrediente 🛒</h2>
         
         <form action="/inventario/guardar" method="post">
