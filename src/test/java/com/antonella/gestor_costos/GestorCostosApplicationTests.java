@@ -184,4 +184,18 @@ class GestorCostosApplicationTests {
 		// 4. THEN: Verificamos que el objeto devuelto sea exactamente la variable "barata"
 		assertEquals(barata, resultado);
 	}
+
+	@Test
+	void deberiaEditarCompraExitosamente() {
+		// 1. GIVEN
+		CompraIngrediente compraEditada = new CompraIngrediente("Harina", 800);
+		compraEditada.setId(1L);
+
+		// 2. WHEN
+		CompraIngrediente resultado = registroCompras.agregarCompra(compraEditada);
+
+		// 3. THEN
+		assertEquals(1L, resultado.getId());
+		assertEquals(800.0, resultado.getPrecioTotal());
+	}
 }

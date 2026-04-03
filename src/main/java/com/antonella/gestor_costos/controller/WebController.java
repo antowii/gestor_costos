@@ -30,9 +30,7 @@ public class WebController {
     // @RequestBody le dice a Java: "Toma el JSON que envía Angular y conviértelo en el objeto CompraIngrediente"
     public CompraIngrediente guardarCompraDesdeWeb(@RequestBody CompraIngrediente nuevaCompra) {
         // 1. Usamos tu Service con su escudo de seguridad intacto
-        registro.agregarCompra(nuevaCompra);
-        // 2. En lugar de redirigir la página, simplemente devolvemos el objeto guardado
-        return nuevaCompra;
+        return registro.agregarCompra(nuevaCompra);
     }
 
     // Los corchetes {id} significan que esa parte de la URL va a cambiar (ej. /eliminar/1, /eliminar/5)
@@ -40,6 +38,19 @@ public class WebController {
     public void eliminarCompraAPI(@PathVariable Long id) {
         // Llama a tu Service para que haga el trabajo sucio
         registro.eliminarCompra(id);
+    }
+
+    // Usamos PUT para actualizar. Recibimos el ID por la URL y los nuevos datos por JSON.
+    @PutMapping("/inventario/editar/{id}")
+    public CompraIngrediente editarCompraAPI(@PathVariable Long id, @RequestBody CompraIngrediente compraEditada) {
+        // 1. Le asignamos a la compra el ID exacto que queremos editar
+        // para asegurarnos de no sobreescribir otro ingrediente por error.
+        compraEditada.setId(id);
+
+        // 2. Usamos tu mismo metodo de guardar.
+        // (Nota: En Spring Boot / JPA, si guardas un objeto que ya tiene un ID existente,
+        // en lugar de crear uno nuevo, actualiza el que ya existe).
+        return registro.agregarCompra(compraEditada);
     }
 
     @GetMapping("/inventario/editar/{id}")

@@ -24,9 +24,13 @@ public class RegistroCompras {
     // ==========================================
     // 3. MÉTODOS TRANSACCIONALES (Crear, Actualizar, Eliminar)
     // ==========================================
-    public void agregarCompra(CompraIngrediente compra) {
+    public CompraIngrediente agregarCompra(CompraIngrediente compra) {
+        // Validamos primero, antes de que List.of() entre en panico
+        validarCompra(compra);
         // Envolvemos el ingrediente único en una lista y se lo pasamos al metodo grande
         agregarVariasCompras(List.of(compra));
+        // Retornamos el objeto (Hibernate, por detrás, ya le habrá puesto el ID si es nuevo)
+        return compra;
     }
 
     public void agregarVariasCompras(List<CompraIngrediente> compras) {
