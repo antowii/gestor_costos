@@ -3,6 +3,7 @@ package com.antonella.gestor_costos.controller;
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import com.antonella.gestor_costos.service.RegistroCompras;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,5 +50,7 @@ public class ProductosController {
     public void agregarVariasCompras(@RequestBody List<CompraIngrediente> compras) {
         registro.agregarVariasCompras(compras);
     }
+
+
 
 }

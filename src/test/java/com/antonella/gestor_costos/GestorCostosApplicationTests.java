@@ -198,4 +198,21 @@ class GestorCostosApplicationTests {
 		assertEquals(1L, resultado.getId());
 		assertEquals(800.0, resultado.getPrecioTotal());
 	}
+
+	@Test
+	void deberiaBloquearIngredienteDuplicado() {
+		// 1. GIVEN: ya existe Harina en el sistema
+		CompraIngrediente existente = new CompraIngrediente("Harina", 1000);
+		Mockito.when(compraRepositoryMock.findAll()).thenReturn(List.of(existente));
+
+		// 2. WHEN & THEN: intentamos agregar otra Harina (con distinto precio)
+		CompraIngrediente duplicado = new CompraIngrediente("Harina", 1200);
+		//Capturamos la excepción para validar el mensaje
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+			registroCompras.agregarCompra(duplicado);
+		});
+
+		// 3. EXTRA ASSERT: ¿El mensaje es correcto?
+		assertEquals("Este ingrediente ya existe en el inventario", exception.getMessage());
+	}
 }

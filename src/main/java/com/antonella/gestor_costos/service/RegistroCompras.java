@@ -112,5 +112,13 @@ public class RegistroCompras {
         if (compra.getNombre() == null || compra.getNombre().isBlank()) {
             throw new IllegalArgumentException("El nombre del ingrediente es obligatorio y no puede estar vacío");
         }
+        // 3. Validación de duplicados
+        for (CompraIngrediente guardado : listaCompleta()) {
+            //Comparamos el nombre guardado con el nombre del objeto nuevo que está entrando
+            if (guardado.getNombre().equalsIgnoreCase(compra.getNombre())) {
+                throw new IllegalArgumentException("Este ingrediente ya existe en el inventario");
+            }
+        }
     }
+
 }

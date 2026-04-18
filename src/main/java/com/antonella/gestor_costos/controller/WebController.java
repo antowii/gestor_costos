@@ -2,6 +2,7 @@ package com.antonella.gestor_costos.controller;
 
 import com.antonella.gestor_costos.entity.CompraIngrediente;
 import com.antonella.gestor_costos.service.RegistroCompras;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,5 +65,13 @@ public class WebController {
 
         // 3. Le decimos a Spring Boot que abra un archivo llamado "editar.html"
         return "editar";
+    }
+
+    // MANEJO DE EXCEPCIONES (Traductor a HTTP 400)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> manejarExcepciones(IllegalArgumentException ex) {
+        // badRequest() genera el código HTTP 400
+        // body() inyecta el texto exacto que pusimos en el Service ("Este ingrediente ya existe...")
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
